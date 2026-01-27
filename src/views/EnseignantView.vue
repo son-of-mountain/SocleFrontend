@@ -22,7 +22,7 @@ const successMessage = ref('')
 // Fetch all enseignants
 const fetchEnseignants = async () => {
   try {
-    const response = await fetch('/api/enseignants')
+    const response = await fetch('http://localhost:8080/api/enseignants')
     const result = await response.json()
     if (result.status === 'success') {
       enseignants.value = result.data
@@ -37,7 +37,7 @@ const fetchEnseignants = async () => {
 // Add new enseignant
 const addEnseignant = async () => {
   try {
-    const response = await fetch('/api/enseignants', {
+    const response = await fetch('http://localhost:8080/api/enseignants', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -59,7 +59,7 @@ const addEnseignant = async () => {
 // Update enseignant
 const updateEnseignant = async () => {
   try {
-    const response = await fetch(`/api/enseignants/${form.value.noEnseignant}`, {
+    const response = await fetch('http://localhost:8080/api/enseignants', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -83,7 +83,7 @@ const deleteEnseignant = async (noEnseignant) => {
   if (!confirm('Are you sure you want to delete this enseignant?')) return
   
   try {
-    const response = await fetch(`/api/enseignants/${noEnseignant}`, {
+    const response = await fetch(`http://localhost:8080/api/enseignants/${noEnseignant}`, {
       method: 'DELETE'
     })
     const result = await response.json()
@@ -142,9 +142,9 @@ onMounted(() => {
 
 <template>
   <div>
-    <h2 class="mb-4">Manage Enseignants</h2>
+    <h2 class="mb-4">Gestion des Enseignants</h2>
 
-    <!-- Success/Error Messages -->
+    <!-- Messages de succès/erreur -->
     <div v-if="successMessage" class="alert alert-success alert-dismissible fade show">
       {{ successMessage }}
       <button type="button" class="btn-close" @click="successMessage = ''"></button>
@@ -154,10 +154,10 @@ onMounted(() => {
       <button type="button" class="btn-close" @click="errorMessage = ''"></button>
     </div>
 
-    <!-- Form -->
+    <!-- Formulaire -->
     <div class="card mb-4">
       <div class="card-header">
-        <h5>{{ isEditing ? 'Edit Enseignant' : 'Add New Enseignant' }}</h5>
+        <h5>{{ isEditing ? 'Modifier l\'Enseignant' : 'Ajouter un Enseignant' }}</h5>
       </div>
       <div class="card-body">
         <form @submit.prevent="submitForm">
@@ -222,27 +222,27 @@ onMounted(() => {
 
           <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary">
-              {{ isEditing ? 'Update' : 'Add' }}
+              {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
             </button>
             <button v-if="isEditing" type="button" class="btn btn-secondary" @click="resetForm">
-              Cancel
+              Annuler
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- Table -->
+    <!-- Tableau -->
     <div class="card">
       <div class="card-header">
-        <h5>Enseignants List</h5>
+        <h5>Liste des Enseignants</h5>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-                <th>No</th>
+                <th>N°</th>
                 <th>Nom</th>
                 <th>Prénom</th>
                 <th>Email UBO</th>
@@ -254,7 +254,7 @@ onMounted(() => {
             </thead>
             <tbody>
               <tr v-if="enseignants.length === 0">
-                <td colspan="8" class="text-center">No enseignants found</td>
+                <td colspan="8" class="text-center">Aucun enseignant trouvé</td>
               </tr>
               <tr v-for="enseignant in enseignants" :key="enseignant.noEnseignant">
                 <td>{{ enseignant.noEnseignant }}</td>
@@ -266,10 +266,10 @@ onMounted(() => {
                 <td>{{ enseignant.telephone }}</td>
                 <td>
                   <button @click="editEnseignant(enseignant)" class="btn btn-sm btn-warning me-2">
-                    Edit
+                    Modifier
                   </button>
                   <button @click="deleteEnseignant(enseignant.noEnseignant)" class="btn btn-sm btn-danger">
-                    Delete
+                    Supprimer
                   </button>
                 </td>
               </tr>

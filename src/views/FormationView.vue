@@ -18,7 +18,7 @@ const successMessage = ref('')
 // Fetch all formations
 const fetchFormations = async () => {
   try {
-    const response = await fetch('/api/formations')
+    const response = await fetch('http://localhost:8080/api/formations')
     const result = await response.json()
     if (result.status === 'success') {
       formations.value = result.data
@@ -33,7 +33,7 @@ const fetchFormations = async () => {
 // Add new formation
 const addFormation = async () => {
   try {
-    const response = await fetch('/api/formations', {
+    const response = await fetch('http://localhost:8080/api/formations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -55,7 +55,7 @@ const addFormation = async () => {
 // Update formation
 const updateFormation = async () => {
   try {
-    const response = await fetch(`/api/formations/${form.value.codeFormation}`, {
+    const response = await fetch('http://localhost:8080/api/formations', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -79,7 +79,7 @@ const deleteFormation = async (codeFormation) => {
   if (!confirm('Are you sure you want to delete this formation?')) return
   
   try {
-    const response = await fetch(`/api/formations/${codeFormation}`, {
+    const response = await fetch(`http://localhost:8080/api/formations/${codeFormation}`, {
       method: 'DELETE'
     })
     const result = await response.json()
@@ -134,9 +134,9 @@ onMounted(() => {
 
 <template>
   <div>
-    <h2 class="mb-4">Manage Formations</h2>
+    <h2 class="mb-4">Gestion des Formations</h2>
 
-    <!-- Success/Error Messages -->
+    <!-- Messages de succès/erreur -->
     <div v-if="successMessage" class="alert alert-success alert-dismissible fade show">
       {{ successMessage }}
       <button type="button" class="btn-close" @click="successMessage = ''"></button>
@@ -146,10 +146,10 @@ onMounted(() => {
       <button type="button" class="btn-close" @click="errorMessage = ''"></button>
     </div>
 
-    <!-- Form -->
+    <!-- Formulaire -->
     <div class="card mb-4">
       <div class="card-header">
-        <h5>{{ isEditing ? 'Edit Formation' : 'Add New Formation' }}</h5>
+        <h5>{{ isEditing ? 'Modifier la Formation' : 'Ajouter une Formation' }}</h5>
       </div>
       <div class="card-body">
         <form @submit.prevent="submitForm">
@@ -198,20 +198,20 @@ onMounted(() => {
 
           <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary">
-              {{ isEditing ? 'Update' : 'Add' }}
+              {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
             </button>
             <button v-if="isEditing" type="button" class="btn btn-secondary" @click="resetForm">
-              Cancel
+              Annuler
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- Table -->
+    <!-- Tableau -->
     <div class="card">
       <div class="card-header">
-        <h5>Formations List</h5>
+        <h5>Liste des Formations</h5>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -221,7 +221,7 @@ onMounted(() => {
                 <th>Code</th>
                 <th>Nom Formation</th>
                 <th>Diplôme</th>
-                <th>N0 Année</th>
+                <th>N° Année</th>
                 <th>Double Diplôme</th>
                 <th>Début Habilitation</th>
                 <th>Fin Habilitation</th>
@@ -230,7 +230,7 @@ onMounted(() => {
             </thead>
             <tbody>
               <tr v-if="formations.length === 0">
-                <td colspan="8" class="text-center">No formations found</td>
+                <td colspan="8" class="text-center">Aucune formation trouvée</td>
               </tr>
               <tr v-for="formation in formations" :key="formation.codeFormation">
                 <td>{{ formation.codeFormation }}</td>
@@ -242,10 +242,10 @@ onMounted(() => {
                 <td>{{ formation.finHabilitation }}</td>
                 <td>
                   <button @click="editFormation(formation)" class="btn btn-sm btn-warning me-2">
-                    Edit
+                    Modifier
                   </button>
                   <button @click="deleteFormation(formation.codeFormation)" class="btn btn-sm btn-danger">
-                    Delete
+                    Supprimer
                   </button>
                 </td>
               </tr>

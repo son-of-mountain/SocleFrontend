@@ -37,7 +37,7 @@ const getPromotionName = (anneePro) => {
 // Fetch all etudiants
 const fetchEtudiants = async () => {
   try {
-    const response = await fetch('/api/etudiants')
+    const response = await fetch('http://localhost:8080/api/etudiants')
     const result = await response.json()
     if (result.status === 'success') {
       etudiants.value = result.data
@@ -52,7 +52,7 @@ const fetchEtudiants = async () => {
 // Fetch all promotions for dropdown
 const fetchPromotions = async () => {
   try {
-    const response = await fetch('/api/promotions')
+    const response = await fetch('http://localhost:8080/api/promotions')
     const result = await response.json()
     if (result.status === 'success') {
       promotions.value = result.data
@@ -67,7 +67,7 @@ const fetchPromotions = async () => {
 // Add new etudiant
 const addEtudiant = async () => {
   try {
-    const response = await fetch('/api/etudiants', {
+    const response = await fetch('http://localhost:8080/api/etudiants', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -89,7 +89,7 @@ const addEtudiant = async () => {
 // Update etudiant
 const updateEtudiant = async () => {
   try {
-    const response = await fetch(`/api/etudiants/${form.value.noEtudiantNat}`, {
+    const response = await fetch('http://localhost:8080/api/etudiants', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -113,7 +113,7 @@ const deleteEtudiant = async (noEtudiantNat) => {
   if (!confirm('Are you sure you want to delete this étudiant?')) return
   
   try {
-    const response = await fetch(`/api/etudiants/${noEtudiantNat}`, {
+    const response = await fetch(`http://localhost:8080/api/etudiants/${noEtudiantNat}`, {
       method: 'DELETE'
     })
     const result = await response.json()
@@ -183,9 +183,9 @@ onMounted(async () => {
 
 <template>
   <div>
-    <h2 class="mb-4">Manage Étudiants</h2>
+    <h2 class="mb-4">Gestion des Étudiants</h2>
 
-    <!-- Success/Error Messages -->
+    <!-- Messages de succès/erreur -->
     <div v-if="successMessage" class="alert alert-success alert-dismissible fade show">
       {{ successMessage }}
       <button type="button" class="btn-close" @click="successMessage = ''"></button>
@@ -195,10 +195,10 @@ onMounted(async () => {
       <button type="button" class="btn-close" @click="errorMessage = ''"></button>
     </div>
 
-    <!-- Form -->
+    <!-- Formulaire -->
     <div class="card mb-4">
       <div class="card-header">
-        <h5>{{ isEditing ? 'Edit Étudiant' : 'Add New Étudiant' }}</h5>
+        <h5>{{ isEditing ? 'Modifier l\'Étudiant' : 'Ajouter un Étudiant' }}</h5>
       </div>
       <div class="card-body">
         <form @submit.prevent="submitForm">
@@ -273,7 +273,7 @@ onMounted(async () => {
             <div class="col-md-3 mb-3">
               <label class="form-label">Promotion *</label>
               <select v-model="form.anneePro" class="form-select" required>
-                <option value="">-- Select Promotion --</option>
+                <option value="">-- Sélectionner une Promotion --</option>
                 <option v-for="promotion in promotions" :key="promotion.anneePro" :value="promotion.anneePro">
                   {{ promotion.anneePro }} - {{ promotion.siglePro }}
                 </option>
@@ -312,27 +312,27 @@ onMounted(async () => {
 
           <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary">
-              {{ isEditing ? 'Update' : 'Add' }}
+              {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
             </button>
             <button v-if="isEditing" type="button" class="btn btn-secondary" @click="resetForm">
-              Cancel
+              Annuler
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- Table -->
+    <!-- Tableau -->
     <div class="card">
       <div class="card-header">
-        <h5>Étudiants List</h5>
+        <h5>Liste des Étudiants</h5>
       </div>
       <div class="card-body">
         <div class="table-responsive">
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-                <th>No Étudiant</th>
+                <th>N° Étudiant</th>
                 <th>Nom</th>
                 <th>Prénom</th>
                 <th>Sexe</th>
@@ -344,7 +344,7 @@ onMounted(async () => {
             </thead>
             <tbody>
               <tr v-if="etudiants.length === 0">
-                <td colspan="8" class="text-center">No étudiants found</td>
+                <td colspan="8" class="text-center">Aucun étudiant trouvé</td>
               </tr>
               <tr v-for="etudiant in etudiants" :key="etudiant.noEtudiantNat">
                 <td>{{ etudiant.noEtudiantNat }}</td>
@@ -360,10 +360,10 @@ onMounted(async () => {
                 </td>
                 <td>
                   <button @click="editEtudiant(etudiant)" class="btn btn-sm btn-warning me-2">
-                    Edit
+                    Modifier
                   </button>
                   <button @click="deleteEtudiant(etudiant.noEtudiantNat)" class="btn btn-sm btn-danger">
-                    Delete
+                    Supprimer
                   </button>
                 </td>
               </tr>

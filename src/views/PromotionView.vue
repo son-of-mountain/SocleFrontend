@@ -33,7 +33,7 @@ const getEnseignantName = (noEnseignant) => {
 // Fetch all promotions
 const fetchPromotions = async () => {
   try {
-    const response = await fetch('/api/promotions')
+    const response = await fetch('http://localhost:8080/api/promotions')
     const result = await response.json()
     if (result.status === 'success') {
       promotions.value = result.data
@@ -48,7 +48,7 @@ const fetchPromotions = async () => {
 // Fetch all enseignants for dropdown
 const fetchEnseignants = async () => {
   try {
-    const response = await fetch('/api/enseignants')
+    const response = await fetch('http://localhost:8080/api/enseignants')
     const result = await response.json()
     if (result.status === 'success') {
       enseignants.value = result.data
@@ -63,7 +63,7 @@ const fetchEnseignants = async () => {
 // Fetch all formations for dropdown
 const fetchFormations = async () => {
   try {
-    const response = await fetch('/api/formations')
+    const response = await fetch('http://localhost:8080/api/formations')
     const result = await response.json()
     if (result.status === 'success') {
       formations.value = result.data
@@ -78,7 +78,7 @@ const fetchFormations = async () => {
 // Add new promotion
 const addPromotion = async () => {
   try {
-    const response = await fetch('/api/promotions', {
+    const response = await fetch('http://localhost:8080/api/promotions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -100,7 +100,7 @@ const addPromotion = async () => {
 // Update promotion
 const updatePromotion = async () => {
   try {
-    const response = await fetch(`/api/promotions/${form.value.anneePro}`, {
+    const response = await fetch('http://localhost:8080/api/promotions', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -124,7 +124,7 @@ const deletePromotion = async (anneePro) => {
   if (!confirm('Are you sure you want to delete this promotion?')) return
   
   try {
-    const response = await fetch(`/api/promotions/${anneePro}`, {
+    const response = await fetch(`http://localhost:8080/api/promotions/${anneePro}`, {
       method: 'DELETE'
     })
     const result = await response.json()
@@ -183,9 +183,9 @@ onMounted(async () => {
 
 <template>
   <div>
-    <h2 class="mb-4">Manage Promotions</h2>
+    <h2 class="mb-4">Gestion des Promotions</h2>
 
-    <!-- Success/Error Messages -->
+    <!-- Messages de succès/erreur -->
     <div v-if="successMessage" class="alert alert-success alert-dismissible fade show">
       {{ successMessage }}
       <button type="button" class="btn-close" @click="successMessage = ''"></button>
@@ -195,10 +195,10 @@ onMounted(async () => {
       <button type="button" class="btn-close" @click="errorMessage = ''"></button>
     </div>
 
-    <!-- Form -->
+    <!-- Formulaire -->
     <div class="card mb-4">
       <div class="card-header">
-        <h5>{{ isEditing ? 'Edit Promotion' : 'Add New Promotion' }}</h5>
+        <h5>{{ isEditing ? 'Modifier la Promotion' : 'Ajouter une Promotion' }}</h5>
       </div>
       <div class="card-body">
         <form @submit.prevent="submitForm">
@@ -217,7 +217,7 @@ onMounted(async () => {
             <div class="col-md-6 mb-3">
               <label class="form-label">Formation *</label>
               <select v-model="form.codeFormation" class="form-select" required>
-                <option value="">-- Select Formation --</option>
+                <option value="">-- Sélectionner une Formation --</option>
                 <option v-for="formation in formations" :key="formation.codeFormation" :value="formation.codeFormation">
                   {{ formation.nomFormation }} ({{ formation.codeFormation }})
                 </option>
@@ -226,7 +226,7 @@ onMounted(async () => {
             <div class="col-md-6 mb-3">
               <label class="form-label">Responsable (Enseignant) *</label>
               <select v-model="form.noEnseignant" class="form-select" required>
-                <option :value="null">-- Select Enseignant --</option>
+                <option :value="null">-- Sélectionner un Enseignant --</option>
                 <option v-for="enseignant in enseignants" :key="enseignant.noEnseignant" :value="enseignant.noEnseignant">
                   {{ enseignant.prenom }} {{ enseignant.nom }} ({{ enseignant.type }})
                 </option>
@@ -258,20 +258,20 @@ onMounted(async () => {
 
           <div class="d-flex gap-2">
             <button type="submit" class="btn btn-primary">
-              {{ isEditing ? 'Update' : 'Add' }}
+              {{ isEditing ? 'Mettre à jour' : 'Ajouter' }}
             </button>
             <button v-if="isEditing" type="button" class="btn btn-secondary" @click="resetForm">
-              Cancel
+              Annuler
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- Table -->
+    <!-- Tableau -->
     <div class="card">
       <div class="card-header">
-        <h5>Promotions List</h5>
+        <h5>Liste des Promotions</h5>
       </div>
       <div class="card-body">
         <div class="table-responsive">
@@ -289,7 +289,7 @@ onMounted(async () => {
             </thead>
             <tbody>
               <tr v-if="promotions.length === 0">
-                <td colspan="7" class="text-center">No promotions found</td>
+                <td colspan="7" class="text-center">Aucune promotion trouvée</td>
               </tr>
               <tr v-for="promotion in promotions" :key="promotion.anneePro">
                 <td>{{ promotion.anneePro }}</td>
@@ -300,10 +300,10 @@ onMounted(async () => {
                 <td>{{ promotion.dateRentree }}</td>
                 <td>
                   <button @click="editPromotion(promotion)" class="btn btn-sm btn-warning me-2">
-                    Edit
+                    Modifier
                   </button>
                   <button @click="deletePromotion(promotion.anneePro)" class="btn btn-sm btn-danger">
-                    Delete
+                    Supprimer
                   </button>
                 </td>
               </tr>
