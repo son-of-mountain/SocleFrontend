@@ -3,7 +3,7 @@ import { ref, onMounted, computed } from 'vue'
 
 const enseignants = ref([])
 const form = ref({
-  noEnseignant: null,
+  id: null,
   nom: '',
   prenom: '',
   encPersoEmail: '',
@@ -104,11 +104,11 @@ const updateEnseignant = async () => {
 }
 
 // Delete enseignant
-const deleteEnseignant = async (noEnseignant) => {
+const deleteEnseignant = async (id) => {
   if (!confirm('Êtes-vous sûr de vouloir supprimer cet enseignant ?')) return
   
   try {
-    const response = await fetch(`http://localhost:8080/api/enseignants/${noEnseignant}`, {
+    const response = await fetch(`http://localhost:8080/api/enseignants/${id}`, {
       method: 'DELETE'
     })
     const result = await response.json()
@@ -144,7 +144,7 @@ const submitForm = () => {
 // Reset form
 const resetForm = () => {
   form.value = {
-    noEnseignant: null,
+    id: null,
     nom: '',
     prenom: '',
     encPersoEmail: '',
@@ -268,8 +268,8 @@ onMounted(() => {
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-                <th @click="sortBy('noEnseignant')" style="cursor: pointer">
-                  N° <i v-if="sortColumn === 'noEnseignant'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                <th @click="sortBy('id')" style="cursor: pointer">
+                  N° <i v-if="sortColumn === 'id'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
                 </th>
                 <th @click="sortBy('nom')" style="cursor: pointer">
                   Nom <i v-if="sortColumn === 'nom'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
@@ -290,8 +290,8 @@ onMounted(() => {
               <tr v-if="enseignants.length === 0">
                 <td colspan="6" class="text-center">Aucun enseignant trouvé</td>
               </tr>
-              <tr v-for="enseignant in sortedEnseignants" :key="enseignant.noEnseignant">
-                <td>{{ enseignant.noEnseignant }}</td>
+              <tr v-for="enseignant in sortedEnseignants" :key="enseignant.id">
+                <td>{{ enseignant.id }}</td>
                 <td>{{ enseignant.nom }}</td>
                 <td>{{ enseignant.prenom }}</td>
                 <td>{{ enseignant.type }}</td>
@@ -303,7 +303,7 @@ onMounted(() => {
                   <button @click="editEnseignant(enseignant)" class="btn btn-sm btn-warning me-2" title="Modifier">
                     <i class="bi bi-pencil"></i>
                   </button>
-                  <button @click="deleteEnseignant(enseignant.noEnseignant)" class="btn btn-sm btn-danger" title="Supprimer">
+                  <button @click="deleteEnseignant(enseignant.id)" class="btn btn-sm btn-danger" title="Supprimer">
                     <i class="bi bi-trash"></i>
                   </button>
                 </td>
@@ -323,7 +323,7 @@ onMounted(() => {
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body" v-if="selectedEnseignant">
-            <p><strong>N° Enseignant:</strong> {{ selectedEnseignant.noEnseignant }}</p>
+            <p><strong>N° Enseignant:</strong> {{ selectedEnseignant.id }}</p>
             <p><strong>Nom:</strong> {{ selectedEnseignant.nom }}</p>
             <p><strong>Prénom:</strong> {{ selectedEnseignant.prenom }}</p>
             <p><strong>Email Perso:</strong> {{ selectedEnseignant.encPersoEmail }}</p>
