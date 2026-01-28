@@ -24,13 +24,9 @@ const fetchEnseignants = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/enseignants')
     const result = await response.json()
-    if (result.status === 'success') {
-      enseignants.value = result.data
-    } else {
-      errorMessage.value = result.message || 'Failed to fetch enseignants'
-    }
+    enseignants.value = result
   } catch (error) {
-    errorMessage.value = 'Error fetching enseignants: ' + error.message
+    errorMessage.value = 'Erreur lors du chargement des enseignants: ' + error.message
   }
 }
 

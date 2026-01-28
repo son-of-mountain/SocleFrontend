@@ -35,13 +35,9 @@ const fetchPromotions = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/promotions')
     const result = await response.json()
-    if (result.status === 'success') {
-      promotions.value = result.data
-    } else {
-      errorMessage.value = result.message || 'Failed to fetch promotions'
-    }
+    promotions.value = result
   } catch (error) {
-    errorMessage.value = 'Error fetching promotions: ' + error.message
+    errorMessage.value = 'Erreur lors du chargement des promotions: ' + error.message
   }
 }
 
@@ -50,13 +46,9 @@ const fetchEnseignants = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/enseignants')
     const result = await response.json()
-    if (result.status === 'success') {
-      enseignants.value = result.data
-    } else {
-      errorMessage.value = result.message || 'Failed to fetch enseignants'
-    }
+    enseignants.value = result
   } catch (error) {
-    errorMessage.value = 'Error fetching enseignants: ' + error.message
+    errorMessage.value = 'Erreur lors du chargement des enseignants: ' + error.message
   }
 }
 
@@ -65,13 +57,9 @@ const fetchFormations = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/formations')
     const result = await response.json()
-    if (result.status === 'success') {
-      formations.value = result.data
-    } else {
-      errorMessage.value = result.message || 'Failed to fetch formations'
-    }
+    formations.value = result
   } catch (error) {
-    errorMessage.value = 'Error fetching formations: ' + error.message
+    errorMessage.value = 'Erreur lors du chargement des formations: ' + error.message
   }
 }
 

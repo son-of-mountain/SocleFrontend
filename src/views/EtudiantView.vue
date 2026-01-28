@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import FieldTooltip from '../components/FieldTooltip.vue'
 
 const etudiants = ref([])
 const promotions = ref([])
@@ -39,13 +40,9 @@ const fetchEtudiants = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/etudiants')
     const result = await response.json()
-    if (result.status === 'success') {
-      etudiants.value = result.data
-    } else {
-      errorMessage.value = result.message || 'Failed to fetch etudiants'
-    }
+    etudiants.value = result
   } catch (error) {
-    errorMessage.value = 'Error fetching etudiants: ' + error.message
+    errorMessage.value = 'Erreur lors du chargement des étudiants: ' + error.message
   }
 }
 
@@ -54,13 +51,9 @@ const fetchPromotions = async () => {
   try {
     const response = await fetch('http://localhost:8080/api/promotions')
     const result = await response.json()
-    if (result.status === 'success') {
-      promotions.value = result.data
-    } else {
-      errorMessage.value = result.message || 'Failed to fetch promotions'
-    }
+    promotions.value = result
   } catch (error) {
-    errorMessage.value = 'Error fetching promotions: ' + error.message
+    errorMessage.value = 'Erreur lors du chargement des promotions: ' + error.message
   }
 }
 
@@ -204,70 +197,109 @@ onMounted(async () => {
         <form @submit.prevent="submitForm">
           <div class="row">
             <div class="col-md-4 mb-3">
-              <label class="form-label">No Étudiant National *</label>
+              <label class="form-label">
+                No Étudiant National *
+                <FieldTooltip text="Numéro National de l'étudiant" />
+              </label>
               <input v-model="form.noEtudiantNat" type="text" class="form-control" :disabled="isEditing" required>
             </div>
             <div class="col-md-4 mb-3">
-              <label class="form-label">Nom *</label>
+              <label class="form-label">
+                Nom *
+                <FieldTooltip text="Nom de l'étudiant" />
+              </label>
               <input v-model="form.nom" type="text" class="form-control" required>
             </div>
             <div class="col-md-4 mb-3">
-              <label class="form-label">Prénom *</label>
+              <label class="form-label">
+                Prénom *
+                <FieldTooltip text="Prénom de l'étudiant" />
+              </label>
               <input v-model="form.prenom" type="text" class="form-control" required>
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-3 mb-3">
-              <label class="form-label">Sexe *</label>
+              <label class="form-label">
+                Sexe *
+                <FieldTooltip text="Représente le sexe des personnes" />
+              </label>
               <select v-model="form.sexe" class="form-select" required>
-                <option value="H">H</option>
-                <option value="F">F</option>
+                <option value="H">H (Homme)</option>
+                <option value="F">F (Femme)</option>
               </select>
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label">Date Naissance</label>
+              <label class="form-label">
+                Date Naissance
+                <FieldTooltip text="Date de naissance de l'étudiant" />
+              </label>
               <input v-model="form.dateNaissance" type="date" class="form-control">
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label">Lieu Naissance</label>
+              <label class="form-label">
+                Lieu Naissance
+                <FieldTooltip text="Lieu de naissance de l'étudiant" />
+              </label>
               <input v-model="form.lieuNaissance" type="text" class="form-control">
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label">Nationalité</label>
+              <label class="form-label">
+                Nationalité
+                <FieldTooltip text="Nationalité de l'étudiant" />
+              </label>
               <input v-model="form.nationalite" type="text" class="form-control">
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Email *</label>
+              <label class="form-label">
+                Email *
+                <FieldTooltip text="Adresse email de l'étudiant" />
+              </label>
               <input v-model="form.email" type="email" class="form-control" required>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Situation</label>
-              <input v-model="form.situation" type="text" class="form-control">
+              <label class="form-label">
+                Situation
+                <FieldTooltip text="Représente la situation de famille d'un étudiant (CEL: Célibataire, MAR: Marié, DIV: Divorcé)" />
+              </label>
+              <input v-model="form.situation" type="text" class="form-control" placeholder="CEL, MAR, DIV...">
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-12 mb-3">
-              <label class="form-label">Adresse Permanente</label>
+              <label class="form-label">
+                Adresse Permanente
+                <FieldTooltip text="Rue de l'étudiant" />
+              </label>
               <input v-model="form.permAdresse" type="text" class="form-control">
             </div>
           </div>
 
           <div class="row">
             <div class="col-md-3 mb-3">
-              <label class="form-label">Code Postal</label>
+              <label class="form-label">
+                Code Postal
+                <FieldTooltip text="Code Postal de l'étudiant" />
+              </label>
               <input v-model="form.permCp" type="text" class="form-control">
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label">Ville</label>
+              <label class="form-label">
+                Ville
+                <FieldTooltip text="Ville de l'étudiant" />
+              </label>
               <input v-model="form.permVille" type="text" class="form-control">
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label">Pays</label>
+              <label class="form-label">
+                Pays
+                <FieldTooltip text="Pays de l'étudiant" />
+              </label>
               <input v-model="form.permPays" type="text" class="form-control">
             </div>
             <div class="col-md-3 mb-3">
@@ -283,15 +315,31 @@ onMounted(async () => {
 
           <div class="row">
             <div class="col-md-4 mb-3">
-              <label class="form-label">Dernier Diplôme</label>
+              <label class="form-label">
+                Dernier Diplôme
+                <FieldTooltip text="Dernier diplôme obtenu par l'étudiant" />
+              </label>
               <input v-model="form.dernierDiplome" type="text" class="form-control">
             </div>
             <div class="col-md-4 mb-3">
-              <label class="form-label">Université</label>
+              <label class="form-label">
+                Dernier Diplôme
+                <FieldTooltip text="Dernier diplôme obtenu par l'étudiant" />
+              </label>
+              <input v-model="form.dernierDiplome" type="text" class="form-control">
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">
+                Université
+                <FieldTooltip text="Dernière université fréquentée par l'étudiant" />
+              </label>
               <input v-model="form.universite" type="text" class="form-control">
             </div>
             <div class="col-md-4 mb-3">
-              <label class="form-label">Est Diplômé *</label>
+              <label class="form-label">
+                Est Diplômé *
+                <FieldTooltip text="Représente une valeur booléenne : O (Oui) ou N (Non)" />
+              </label>
               <select v-model="form.estDiplome" class="form-select" required>
                 <option value="O">Oui</option>
                 <option value="N">Non</option>
@@ -301,11 +349,17 @@ onMounted(async () => {
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Sigle Étudiant</label>
+              <label class="form-label">
+                Sigle Étudiant
+                <FieldTooltip text="Sigle de l'étudiant" />
+              </label>
               <input v-model="form.sigleEtu" type="text" class="form-control">
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Compte CRI</label>
+              <label class="form-label">
+                Compte CRI
+                <FieldTooltip text="Compte CRI de l'étudiant" />
+              </label>
               <input v-model="form.compteCri" type="text" class="form-control">
             </div>
           </div>
