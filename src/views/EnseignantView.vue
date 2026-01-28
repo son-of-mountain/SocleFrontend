@@ -18,6 +18,7 @@ const form = ref({
 const isEditing = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const selectedEnseignant = ref(null)
 
 // Fetch all enseignants
 const fetchEnseignants = async () => {
@@ -40,15 +41,15 @@ const addEnseignant = async () => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Enseignant added successfully'
+      successMessage.value = 'Enseignant ajouté avec succès'
       resetForm()
       await fetchEnseignants()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to add enseignant'
+      errorMessage.value = result.message || 'Échec de l\'ajout de l\'enseignant'
     }
   } catch (error) {
-    errorMessage.value = 'Error adding enseignant: ' + error.message
+    errorMessage.value = 'Erreur lors de l\'ajout de l\'enseignant : ' + error.message
   }
 }
 
@@ -62,21 +63,21 @@ const updateEnseignant = async () => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Enseignant updated successfully'
+      successMessage.value = 'Enseignant mis à jour avec succès'
       resetForm()
       await fetchEnseignants()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to update enseignant'
+      errorMessage.value = result.message || 'Échec de la mise à jour de l\'enseignant'
     }
   } catch (error) {
-    errorMessage.value = 'Error updating enseignant: ' + error.message
+    errorMessage.value = 'Erreur lors de la mise à jour de l\'enseignant : ' + error.message
   }
 }
 
 // Delete enseignant
 const deleteEnseignant = async (noEnseignant) => {
-  if (!confirm('Are you sure you want to delete this enseignant?')) return
+  if (!confirm('Êtes-vous sûr de vouloir supprimer cet enseignant ?')) return
   
   try {
     const response = await fetch(`http://localhost:8080/api/enseignants/${noEnseignant}`, {
@@ -84,14 +85,14 @@ const deleteEnseignant = async (noEnseignant) => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Enseignant deleted successfully'
+      successMessage.value = 'Enseignant supprimé avec succès'
       await fetchEnseignants()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to delete enseignant'
+      errorMessage.value = result.message || 'Échec de la suppression de l\'enseignant'
     }
   } catch (error) {
-    errorMessage.value = 'Error deleting enseignant: ' + error.message
+    errorMessage.value = 'Erreur lors de la suppression de l\'enseignant : ' + error.message
   }
 }
 
@@ -137,8 +138,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <h2 class="mb-4">Gestion des Enseignants</h2>
+  <div class="position-relative">
+    <div class="page-background"></div>
+    <h2 class="mb-4 text-white">Gestion des Enseignants</h2>
 
     <!-- Messages de succès/erreur -->
     <div v-if="successMessage" class="alert alert-success alert-dismissible fade show">
@@ -241,31 +243,30 @@ onMounted(() => {
                 <th>N°</th>
                 <th>Nom</th>
                 <th>Prénom</th>
-                <th>Email UBO</th>
                 <th>Type</th>
                 <th>Sexe</th>
-                <th>Téléphone</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-if="enseignants.length === 0">
-                <td colspan="8" class="text-center">Aucun enseignant trouvé</td>
+                <td colspan="6" class="text-center">Aucun enseignant trouvé</td>
               </tr>
               <tr v-for="enseignant in enseignants" :key="enseignant.noEnseignant">
                 <td>{{ enseignant.noEnseignant }}</td>
                 <td>{{ enseignant.nom }}</td>
                 <td>{{ enseignant.prenom }}</td>
-                <td>{{ enseignant.emailUbo }}</td>
                 <td>{{ enseignant.type }}</td>
                 <td>{{ enseignant.sexe }}</td>
-                <td>{{ enseignant.telephone }}</td>
                 <td>
-                  <button @click="editEnseignant(enseignant)" class="btn btn-sm btn-warning me-2">
-                    Modifier
+                  <button @click="selectedEnseignant = enseignant" data-bs-toggle="modal" data-bs-target="#viewEnseignantModal" class="btn btn-sm btn-info me-2" title="Voir détails">
+                    <i class="bi bi-eye"></i>
                   </button>
-                  <button @click="deleteEnseignant(enseignant.noEnseignant)" class="btn btn-sm btn-danger">
-                    Supprimer
+                  <button @click="editEnseignant(enseignant)" class="btn btn-sm btn-warning me-2" title="Modifier">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button @click="deleteEnseignant(enseignant.noEnseignant)" class="btn btn-sm btn-danger" title="Supprimer">
+                    <i class="bi bi-trash"></i>
                   </button>
                 </td>
               </tr>
@@ -274,5 +275,48 @@ onMounted(() => {
         </div>
       </div>
     </div>
+
+    <!-- Modal Détails -->
+    <div class="modal fade" id="viewEnseignantModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Détails de l'Enseignant</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" v-if="selectedEnseignant">
+            <p><strong>N° Enseignant:</strong> {{ selectedEnseignant.noEnseignant }}</p>
+            <p><strong>Nom:</strong> {{ selectedEnseignant.nom }}</p>
+            <p><strong>Prénom:</strong> {{ selectedEnseignant.prenom }}</p>
+            <p><strong>Email UBO:</strong> {{ selectedEnseignant.emailUbo }}</p>
+            <p><strong>Type:</strong> {{ selectedEnseignant.type }}</p>
+            <p><strong>Sexe:</strong> {{ selectedEnseignant.sexe }}</p>
+            <p><strong>Téléphone:</strong> {{ selectedEnseignant.telephone }}</p>
+            <p><strong>Adresse:</strong> {{ selectedEnseignant.adresse }}</p>
+            <p><strong>Code Postal:</strong> {{ selectedEnseignant.cp }}</p>
+            <p><strong>Ville:</strong> {{ selectedEnseignant.ville }}</p>
+            <p><strong>Pays:</strong> {{ selectedEnseignant.pays }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.page-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Rade_de_Brest.jpg/1920px-Rade_de_Brest.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(5px) brightness(0.5);
+  z-index: -1;
+}
+</style>

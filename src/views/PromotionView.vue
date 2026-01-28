@@ -17,6 +17,7 @@ const form = ref({
 const isEditing = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const selectedPromotion = ref(null)
 
 // Computed property to get formation name by code
 const getFormationName = (codeFormation) => {
@@ -73,15 +74,15 @@ const addPromotion = async () => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Promotion added successfully'
+      successMessage.value = 'Promotion ajoutée avec succès'
       resetForm()
       await fetchPromotions()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to add promotion'
+      errorMessage.value = result.message || 'Échec de l\'ajout de la promotion'
     }
   } catch (error) {
-    errorMessage.value = 'Error adding promotion: ' + error.message
+    errorMessage.value = 'Erreur lors de l\'ajout de la promotion : ' + error.message
   }
 }
 
@@ -95,21 +96,21 @@ const updatePromotion = async () => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Promotion updated successfully'
+      successMessage.value = 'Promotion mise à jour avec succès'
       resetForm()
       await fetchPromotions()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to update promotion'
+      errorMessage.value = result.message || 'Échec de la mise à jour de la promotion'
     }
   } catch (error) {
-    errorMessage.value = 'Error updating promotion: ' + error.message
+    errorMessage.value = 'Erreur lors de la mise à jour de la promotion : ' + error.message
   }
 }
 
 // Delete promotion
 const deletePromotion = async (anneePro) => {
-  if (!confirm('Are you sure you want to delete this promotion?')) return
+  if (!confirm('Êtes-vous sûr de vouloir supprimer cette promotion ?')) return
   
   try {
     const response = await fetch(`http://localhost:8080/api/promotions/${anneePro}`, {
@@ -117,14 +118,14 @@ const deletePromotion = async (anneePro) => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Promotion deleted successfully'
+      successMessage.value = 'Promotion supprimée avec succès'
       await fetchPromotions()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to delete promotion'
+      errorMessage.value = result.message || 'Échec de la suppression de la promotion'
     }
   } catch (error) {
-    errorMessage.value = 'Error deleting promotion: ' + error.message
+    errorMessage.value = 'Erreur lors de la suppression de la promotion : ' + error.message
   }
 }
 
@@ -170,8 +171,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <h2 class="mb-4">Gestion des Promotions</h2>
+  <div class="position-relative">
+    <div class="page-background"></div>
+    <h2 class="mb-4 text-white">Gestion des Promotions</h2>
 
     <!-- Messages de succès/erreur -->
     <div v-if="successMessage" class="alert alert-success alert-dismissible fade show">
@@ -287,11 +289,14 @@ onMounted(async () => {
                 <td>{{ promotion.nbEtuSouhaite }}</td>
                 <td>{{ promotion.dateRentree }}</td>
                 <td>
-                  <button @click="editPromotion(promotion)" class="btn btn-sm btn-warning me-2">
-                    Modifier
+                  <button @click="selectedPromotion = promotion" data-bs-toggle="modal" data-bs-target="#viewPromotionModal" class="btn btn-sm btn-info me-2" title="Voir détails">
+                    <i class="bi bi-eye"></i>
                   </button>
-                  <button @click="deletePromotion(promotion.anneePro)" class="btn btn-sm btn-danger">
-                    Supprimer
+                  <button @click="editPromotion(promotion)" class="btn btn-sm btn-warning me-2" title="Modifier">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button @click="deletePromotion(promotion.anneePro)" class="btn btn-sm btn-danger" title="Supprimer">
+                    <i class="bi bi-trash"></i>
                   </button>
                 </td>
               </tr>
@@ -300,5 +305,45 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+
+    <!-- Modal Détails -->
+    <div class="modal fade" id="viewPromotionModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Détails de la Promotion</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" v-if="selectedPromotion">
+            <p><strong>Année Pro:</strong> {{ selectedPromotion.anneePro }}</p>
+            <p><strong>Sigle Pro:</strong> {{ selectedPromotion.siglePro }}</p>
+            <p><strong>Formation:</strong> {{ getFormationName(selectedPromotion.codeFormation) }}</p>
+            <p><strong>Responsable:</strong> {{ getEnseignantName(selectedPromotion.noEnseignant) }}</p>
+            <p><strong>Nb Étudiants Souhaité:</strong> {{ selectedPromotion.nbEtuSouhaite }}</p>
+            <p><strong>Date Rentrée:</strong> {{ selectedPromotion.dateRentree }}</p>
+            <p><strong>Lieu Rentrée:</strong> {{ selectedPromotion.lieuRentree }}</p>
+            <p><strong>État Préselection:</strong> {{ selectedPromotion.etatPreselection }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.page-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Brest_port_commerce_grues.jpg/1920px-Brest_port_commerce_grues.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(5px) brightness(0.5);
+  z-index: -1;
+}
+</style>

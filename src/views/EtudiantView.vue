@@ -28,6 +28,7 @@ const form = ref({
 const isEditing = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const selectedEtudiant = ref(null)
 
 // Computed property to get promotion display name
 const getPromotionName = (anneePro) => {
@@ -67,15 +68,15 @@ const addEtudiant = async () => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Étudiant added successfully'
+      successMessage.value = 'Étudiant ajouté avec succès'
       resetForm()
       await fetchEtudiants()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to add étudiant'
+      errorMessage.value = result.message || 'Échec de l\'ajout de l\'étudiant'
     }
   } catch (error) {
-    errorMessage.value = 'Error adding étudiant: ' + error.message
+    errorMessage.value = 'Erreur lors de l\'ajout de l\'étudiant : ' + error.message
   }
 }
 
@@ -89,21 +90,21 @@ const updateEtudiant = async () => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Étudiant updated successfully'
+      successMessage.value = 'Étudiant mis à jour avec succès'
       resetForm()
       await fetchEtudiants()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to update étudiant'
+      errorMessage.value = result.message || 'Échec de la mise à jour de l\'étudiant'
     }
   } catch (error) {
-    errorMessage.value = 'Error updating étudiant: ' + error.message
+    errorMessage.value = 'Erreur lors de la mise à jour de l\'étudiant : ' + error.message
   }
 }
 
 // Delete etudiant
 const deleteEtudiant = async (noEtudiantNat) => {
-  if (!confirm('Are you sure you want to delete this étudiant?')) return
+  if (!confirm('Êtes-vous sûr de vouloir supprimer cet étudiant ?')) return
   
   try {
     const response = await fetch(`http://localhost:8080/api/etudiants/${noEtudiantNat}`, {
@@ -111,14 +112,14 @@ const deleteEtudiant = async (noEtudiantNat) => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Étudiant deleted successfully'
+      successMessage.value = 'Étudiant supprimé avec succès'
       await fetchEtudiants()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to delete étudiant'
+      errorMessage.value = result.message || 'Échec de la suppression de l\'étudiant'
     }
   } catch (error) {
-    errorMessage.value = 'Error deleting étudiant: ' + error.message
+    errorMessage.value = 'Erreur lors de la suppression de l\'étudiant : ' + error.message
   }
 }
 
@@ -175,8 +176,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <h2 class="mb-4">Gestion des Étudiants</h2>
+  <div class="position-relative">
+    <div class="page-background"></div>
+    <h2 class="mb-4 text-white">Gestion des Étudiants</h2>
 
     <!-- Messages de succès/erreur -->
     <div v-if="successMessage" class="alert alert-success alert-dismissible fade show">
@@ -413,11 +415,14 @@ onMounted(async () => {
                   </span>
                 </td>
                 <td>
-                  <button @click="editEtudiant(etudiant)" class="btn btn-sm btn-warning me-2">
-                    Modifier
+                  <button @click="selectedEtudiant = etudiant" data-bs-toggle="modal" data-bs-target="#viewEtudiantModal" class="btn btn-sm btn-info me-2" title="Voir détails">
+                    <i class="bi bi-eye"></i>
                   </button>
-                  <button @click="deleteEtudiant(etudiant.noEtudiantNat)" class="btn btn-sm btn-danger">
-                    Supprimer
+                  <button @click="editEtudiant(etudiant)" class="btn btn-sm btn-warning me-2" title="Modifier">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button @click="deleteEtudiant(etudiant.noEtudiantNat)" class="btn btn-sm btn-danger" title="Supprimer">
+                    <i class="bi bi-trash"></i>
                   </button>
                 </td>
               </tr>
@@ -426,5 +431,59 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+
+    <!-- Modal Détails -->
+    <div class="modal fade" id="viewEtudiantModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Détails de l'Étudiant</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" v-if="selectedEtudiant">
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>N° National:</strong> {{ selectedEtudiant.noEtudiantNat }}</p>
+                <p><strong>Nom:</strong> {{ selectedEtudiant.nom }}</p>
+                <p><strong>Prénom:</strong> {{ selectedEtudiant.prenom }}</p>
+                <p><strong>Sexe:</strong> {{ selectedEtudiant.sexe }}</p>
+                <p><strong>Date de Naissance:</strong> {{ selectedEtudiant.dateNaissance }}</p>
+                <p><strong>Lieu de Naissance:</strong> {{ selectedEtudiant.lieuNaissance }}</p>
+                <p><strong>Nationalité:</strong> {{ selectedEtudiant.nationalite }}</p>
+                <p><strong>Situation:</strong> {{ selectedEtudiant.situation }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Email:</strong> {{ selectedEtudiant.email }}</p>
+                <p><strong>Adresse:</strong> {{ selectedEtudiant.permAdresse }}</p>
+                <p><strong>Code Postal:</strong> {{ selectedEtudiant.permCp }}</p>
+                <p><strong>Ville:</strong> {{ selectedEtudiant.permVille }}</p>
+                <p><strong>Pays:</strong> {{ selectedEtudiant.permPays }}</p>
+                <p><strong>Dernier Diplôme:</strong> {{ selectedEtudiant.dernierDiplome }}</p>
+                <p><strong>Université:</strong> {{ selectedEtudiant.universite }}</p>
+                <p><strong>Est Diplômé:</strong> {{ selectedEtudiant.estDiplome === 'O' ? 'Oui' : 'Non' }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.page-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Chateau_de_Brest_cote_Penfeld.jpg/1920px-Chateau_de_Brest_cote_Penfeld.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(5px) brightness(0.5);
+  z-index: -1;
+}
+</style>

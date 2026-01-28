@@ -36,15 +36,15 @@ const addFormation = async () => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Formation added successfully'
+      successMessage.value = 'Formation ajoutée avec succès'
       resetForm()
       await fetchFormations()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to add formation'
+      errorMessage.value = result.message || 'Échec de l\'ajout de la formation'
     }
   } catch (error) {
-    errorMessage.value = 'Error adding formation: ' + error.message
+    errorMessage.value = 'Erreur lors de l\'ajout de la formation : ' + error.message
   }
 }
 
@@ -58,21 +58,21 @@ const updateFormation = async () => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Formation updated successfully'
+      successMessage.value = 'Formation mise à jour avec succès'
       resetForm()
       await fetchFormations()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to update formation'
+      errorMessage.value = result.message || 'Échec de la mise à jour de la formation'
     }
   } catch (error) {
-    errorMessage.value = 'Error updating formation: ' + error.message
+    errorMessage.value = 'Erreur lors de la mise à jour de la formation : ' + error.message
   }
 }
 
 // Delete formation
 const deleteFormation = async (codeFormation) => {
-  if (!confirm('Are you sure you want to delete this formation?')) return
+  if (!confirm('Êtes-vous sûr de vouloir supprimer cette formation ?')) return
   
   try {
     const response = await fetch(`http://localhost:8080/api/formations/${codeFormation}`, {
@@ -80,14 +80,14 @@ const deleteFormation = async (codeFormation) => {
     })
     const result = await response.json()
     if (result.status === 'success') {
-      successMessage.value = 'Formation deleted successfully'
+      successMessage.value = 'Formation supprimée avec succès'
       await fetchFormations()
       setTimeout(() => successMessage.value = '', 3000)
     } else {
-      errorMessage.value = result.message || 'Failed to delete formation'
+      errorMessage.value = result.message || 'Échec de la suppression de la formation'
     }
   } catch (error) {
-    errorMessage.value = 'Error deleting formation: ' + error.message
+    errorMessage.value = 'Erreur lors de la suppression de la formation : ' + error.message
   }
 }
 
@@ -129,8 +129,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <h2 class="mb-4">Gestion des Formations</h2>
+  <div class="position-relative">
+    <div class="page-background"></div>
+    <h2 class="mb-4 text-white">Gestion des Formations</h2>
 
     <!-- Messages de succès/erreur -->
     <div v-if="successMessage" class="alert alert-success alert-dismissible fade show">
@@ -237,11 +238,11 @@ onMounted(() => {
                 <td>{{ formation.debutHabilitation }}</td>
                 <td>{{ formation.finHabilitation }}</td>
                 <td>
-                  <button @click="editFormation(formation)" class="btn btn-sm btn-warning me-2">
-                    Modifier
+                  <button @click="editFormation(formation)" class="btn btn-sm btn-warning me-2" title="Modifier">
+                    <i class="bi bi-pencil"></i>
                   </button>
-                  <button @click="deleteFormation(formation.codeFormation)" class="btn btn-sm btn-danger">
-                    Supprimer
+                  <button @click="deleteFormation(formation.codeFormation)" class="btn btn-sm btn-danger" title="Supprimer">
+                    <i class="bi bi-trash"></i>
                   </button>
                 </td>
               </tr>
@@ -252,3 +253,18 @@ onMounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.page-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/T%C3%A9l%C3%A9ph%C3%A9rique_de_Brest.jpg/1920px-T%C3%A9l%C3%A9ph%C3%A9rique_de_Brest.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: blur(5px) brightness(0.5);
+  z-index: -1;
+}
+</style>

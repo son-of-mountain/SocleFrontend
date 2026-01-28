@@ -89,7 +89,7 @@ import { RouterLink } from 'vue-router'
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('https://images.unsplash.com/photo-1590487988256-9ed24133863e?q=80&w=2128');
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Pont_de_Recouvrance_Brest_2013.jpg/1920px-Pont_de_Recouvrance_Brest_2013.jpg');
   background-size: cover;
   background-position: center;
   filter: blur(8px) brightness(0.4);

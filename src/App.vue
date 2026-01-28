@@ -7,7 +7,7 @@ const route = useRoute()
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
       <RouterLink class="navbar-brand d-flex align-items-center gap-3" to="/">
-        <img src="/public/UBO.png" alt="UBO Logo" style="height: 50px; filter: brightness(0) saturate(100%) invert(82%) sepia(65%) saturate(561%) hue-rotate(2deg) brightness(104%) contrast(104%);">
+        <img src="/UBO.png" alt="UBO Logo" style="height: 50px; filter: brightness(0) saturate(100%) invert(82%) sepia(65%) saturate(561%) hue-rotate(2deg) brightness(104%) contrast(104%);">
         <span>Gestion Universitaire</span>
       </RouterLink>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
