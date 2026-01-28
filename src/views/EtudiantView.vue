@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import FieldTooltip from '../components/FieldTooltip.vue'
 import { validateEtudiant } from '../utils/validators'
 
@@ -30,6 +30,7 @@ const isEditing = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 const selectedEtudiant = ref(null)
+let pollingInterval = null
 
 // Sorting
 const sortColumn = ref('')
@@ -212,6 +213,12 @@ onMounted(async () => {
   await fetchPromotions()
   // Then fetch etudiants
   await fetchEtudiants()
+  
+  pollingInterval = setInterval(fetchEtudiants, 5000)
+})
+
+onUnmounted(() => {
+  if (pollingInterval) clearInterval(pollingInterval)
 })
 </script>
 

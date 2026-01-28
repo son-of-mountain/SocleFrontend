@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { validatePromotion } from '../utils/validators'
 
 const promotions = ref([])
@@ -19,6 +19,7 @@ const isEditing = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 const selectedPromotion = ref(null)
+let pollingInterval = null
 
 // Sorting
 const sortColumn = ref('')
@@ -207,6 +208,12 @@ onMounted(async () => {
   await Promise.all([fetchEnseignants(), fetchFormations()])
   // Then fetch promotions
   await fetchPromotions()
+  
+  pollingInterval = setInterval(fetchPromotions, 5000)
+})
+
+onUnmounted(() => {
+  if (pollingInterval) clearInterval(pollingInterval)
 })
 </script>
 

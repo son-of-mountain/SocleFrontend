@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { validateEnseignant } from '../utils/validators'
 
 const enseignants = ref([])
@@ -21,6 +21,7 @@ const isEditing = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 const selectedEnseignant = ref(null)
+let pollingInterval = null
 
 // Sorting
 const sortColumn = ref('')
@@ -176,6 +177,11 @@ const resetForm = () => {
 
 onMounted(() => {
   fetchEnseignants()
+  pollingInterval = setInterval(fetchEnseignants, 5000)
+})
+
+onUnmounted(() => {
+  if (pollingInterval) clearInterval(pollingInterval)
 })
 </script>
 

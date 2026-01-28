@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 
 const stats = ref({
@@ -10,9 +10,9 @@ const stats = ref({
 })
 
 const isLoading = ref(true)
+let pollingInterval = null
 
 const fetchStats = async () => {
-  isLoading.value = true
   try {
     const [enseignantsRes, etudiantsRes, formationsRes, promotionsRes] = await Promise.all([
       fetch('http://localhost:8080/api/enseignants'),
@@ -41,6 +41,12 @@ const fetchStats = async () => {
 
 onMounted(() => {
   fetchStats()
+  // Poll every 5 seconds for updates
+  pollingInterval = setInterval(fetchStats, 5000)
+})
+
+onUnmounted(() => {
+  if (pollingInterval) clearInterval(pollingInterval)
 })
 </script>
 
