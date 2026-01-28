@@ -173,7 +173,7 @@ onMounted(async () => {
 <template>
   <div class="position-relative">
     <div class="page-background"></div>
-    <h2 class="mb-4 text-white">Gestion des Promotions</h2>
+    <h2 class="mb-4 text-black">Gestion des Promotions</h2>
 
     <!-- Messages de succès/erreur -->
     <div v-if="successMessage" class="alert alert-success alert-dismissible fade show">
