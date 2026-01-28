@@ -6,14 +6,14 @@ const form = ref({
   noEnseignant: null,
   nom: '',
   prenom: '',
-  emailUbo: '',
+  encPersoEmail: '',
   type: 'MCF',
   sexe: 'H',
   adresse: '',
   cp: '',
   ville: '',
   pays: '',
-  telephone: ''
+  telPort: ''
 })
 const isEditing = ref(false)
 const errorMessage = ref('')
@@ -119,14 +119,14 @@ const resetForm = () => {
     noEnseignant: null,
     nom: '',
     prenom: '',
-    emailUbo: '',
+    encPersoEmail: '',
     type: 'MCF',
     sexe: 'H',
     adresse: '',
     cp: '',
     ville: '',
     pays: '',
-    telephone: ''
+    telPort: ''
   }
   isEditing.value = false
   errorMessage.value = ''
@@ -172,8 +172,8 @@ onMounted(() => {
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Email UBO *</label>
-              <input v-model="form.emailUbo" type="email" class="form-control" required>
+              <label class="form-label">Email Perso *</label>
+              <input v-model="form.encPersoEmail" type="email" class="form-control" required>
             </div>
             <div class="col-md-3 mb-3">
               <label class="form-label">Type *</label>
@@ -213,8 +213,8 @@ onMounted(() => {
               <input v-model="form.pays" type="text" class="form-control">
             </div>
             <div class="col-md-3 mb-3">
-              <label class="form-label">Téléphone</label>
-              <input v-model="form.telephone" type="text" class="form-control">
+              <label class="form-label">Tél. Portable</label>
+              <input v-model="form.telPort" type="text" class="form-control">
             </div>
           </div>
 
@@ -288,10 +288,10 @@ onMounted(() => {
             <p><strong>N° Enseignant:</strong> {{ selectedEnseignant.noEnseignant }}</p>
             <p><strong>Nom:</strong> {{ selectedEnseignant.nom }}</p>
             <p><strong>Prénom:</strong> {{ selectedEnseignant.prenom }}</p>
-            <p><strong>Email UBO:</strong> {{ selectedEnseignant.emailUbo }}</p>
+            <p><strong>Email Perso:</strong> {{ selectedEnseignant.encPersoEmail }}</p>
             <p><strong>Type:</strong> {{ selectedEnseignant.type }}</p>
             <p><strong>Sexe:</strong> {{ selectedEnseignant.sexe }}</p>
-            <p><strong>Téléphone:</strong> {{ selectedEnseignant.telephone }}</p>
+            <p><strong>Tél. Portable:</strong> {{ selectedEnseignant.telPort }}</p>
             <p><strong>Adresse:</strong> {{ selectedEnseignant.adresse }}</p>
             <p><strong>Code Postal:</strong> {{ selectedEnseignant.cp }}</p>
             <p><strong>Ville:</strong> {{ selectedEnseignant.ville }}</p>
