@@ -1,9 +1,21 @@
 <script setup>
 import { RouterView, useRoute } from 'vue-router'
+import { computed } from 'vue'
+
 const route = useRoute()
+
+const bgImage = computed(() => {
+  const path = route.path
+  if (path.includes('enseignants')) return '/brest-2.jpg'
+  if (path.includes('formations')) return '/brest-3.jpg'
+  if (path.includes('promotions')) return '/brest-4.jpg'
+  if (path.includes('etudiants')) return '/brest-1.jpg' // Reusing one since we have 4 images for 5 views
+  return '/brest-1.jpg'
+})
 </script>
 
 <template>
+  <div class="global-background" :style="{ backgroundImage: `url(${bgImage})` }"></div>
   <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
       <RouterLink class="navbar-brand d-flex align-items-center gap-3" to="/">
@@ -55,6 +67,30 @@ const route = useRoute()
 </template>
 
 <style scoped>
+.global-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  transition: background-image 0.5s ease-in-out;
+  filter: blur(8px);
+  transform: scale(1.05); /* Prevents white edges from blur */
+}
+
+.global-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
 .navbar {
   backdrop-filter: blur(10px);
 }
