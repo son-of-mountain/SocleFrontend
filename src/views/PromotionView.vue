@@ -19,6 +19,34 @@ const errorMessage = ref('')
 const successMessage = ref('')
 const selectedPromotion = ref(null)
 
+// Sorting
+const sortColumn = ref('')
+const sortOrder = ref('asc')
+
+const sortedPromotions = computed(() => {
+  return [...promotions.value].sort((a, b) => {
+    if (!sortColumn.value) return 0
+    const valA = a[sortColumn.value]
+    const valB = b[sortColumn.value]
+    
+    if (valA == null) return 1
+    if (valB == null) return -1
+    
+    if (valA < valB) return sortOrder.value === 'asc' ? -1 : 1
+    if (valA > valB) return sortOrder.value === 'asc' ? 1 : -1
+    return 0
+  })
+})
+
+const sortBy = (column) => {
+  if (sortColumn.value === column) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortColumn.value = column
+    sortOrder.value = 'asc'
+  }
+}
+
 // Computed property to get formation name by code
 const getFormationName = (codeFormation) => {
   const formation = formations.value.find(f => f.codeFormation === codeFormation)
@@ -268,12 +296,24 @@ onMounted(async () => {
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-                <th>Année Pro</th>
-                <th>Sigle</th>
-                <th>Formation</th>
-                <th>Responsable</th>
-                <th>Nb Étu Souhaité</th>
-                <th>Date Rentrée</th>
+                <th @click="sortBy('anneePro')" style="cursor: pointer">
+                  Année Pro <i v-if="sortColumn === 'anneePro'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('siglePro')" style="cursor: pointer">
+                  Sigle <i v-if="sortColumn === 'siglePro'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('codeFormation')" style="cursor: pointer">
+                  Formation <i v-if="sortColumn === 'codeFormation'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('noEnseignant')" style="cursor: pointer">
+                  Responsable <i v-if="sortColumn === 'noEnseignant'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('nbEtuSouhaite')" style="cursor: pointer">
+                  Nb Étu Souhaité <i v-if="sortColumn === 'nbEtuSouhaite'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('dateRentree')" style="cursor: pointer">
+                  Date Rentrée <i v-if="sortColumn === 'dateRentree'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -281,7 +321,7 @@ onMounted(async () => {
               <tr v-if="promotions.length === 0">
                 <td colspan="7" class="text-center">Aucune promotion trouvée</td>
               </tr>
-              <tr v-for="promotion in promotions" :key="promotion.anneePro">
+              <tr v-for="promotion in sortedPromotions" :key="promotion.anneePro">
                 <td>{{ promotion.anneePro }}</td>
                 <td>{{ promotion.siglePro }}</td>
                 <td>{{ getFormationName(promotion.codeFormation) }}</td>

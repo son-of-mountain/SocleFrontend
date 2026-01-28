@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const formations = ref([])
 const form = ref({
@@ -15,6 +15,34 @@ const isEditing = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 const selectedFormation = ref(null)
+
+// Sorting
+const sortColumn = ref('')
+const sortOrder = ref('asc')
+
+const sortedFormations = computed(() => {
+  return [...formations.value].sort((a, b) => {
+    if (!sortColumn.value) return 0
+    const valA = a[sortColumn.value]
+    const valB = b[sortColumn.value]
+    
+    if (valA == null) return 1
+    if (valB == null) return -1
+    
+    if (valA < valB) return sortOrder.value === 'asc' ? -1 : 1
+    if (valA > valB) return sortOrder.value === 'asc' ? 1 : -1
+    return 0
+  })
+})
+
+const sortBy = (column) => {
+  if (sortColumn.value === column) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortColumn.value = column
+    sortOrder.value = 'asc'
+  }
+}
 
 // Fetch all formations
 const fetchFormations = async () => {
@@ -216,13 +244,27 @@ onMounted(() => {
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-                <th>Code</th>
-                <th>Nom Formation</th>
-                <th>Diplôme</th>
-                <th>N° Année</th>
-                <th>Double Diplôme</th>
-                <th>Début Habilitation</th>
-                <th>Fin Habilitation</th>
+                <th @click="sortBy('codeFormation')" style="cursor: pointer">
+                  Code <i v-if="sortColumn === 'codeFormation'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('nomFormation')" style="cursor: pointer">
+                  Nom Formation <i v-if="sortColumn === 'nomFormation'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('diplome')" style="cursor: pointer">
+                  Diplôme <i v-if="sortColumn === 'diplome'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('n0Annee')" style="cursor: pointer">
+                  N° Année <i v-if="sortColumn === 'n0Annee'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('doubleDiplome')" style="cursor: pointer">
+                  Double Diplôme <i v-if="sortColumn === 'doubleDiplome'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('debutHabilitation')" style="cursor: pointer">
+                  Début Habilitation <i v-if="sortColumn === 'debutHabilitation'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('finHabilitation')" style="cursor: pointer">
+                  Fin Habilitation <i v-if="sortColumn === 'finHabilitation'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -230,7 +272,7 @@ onMounted(() => {
               <tr v-if="formations.length === 0">
                 <td colspan="8" class="text-center">Aucune formation trouvée</td>
               </tr>
-              <tr v-for="formation in formations" :key="formation.codeFormation">
+              <tr v-for="formation in sortedFormations" :key="formation.codeFormation">
                 <td>{{ formation.codeFormation }}</td>
                 <td>{{ formation.nomFormation }}</td>
                 <td>{{ formation.diplome }}</td>

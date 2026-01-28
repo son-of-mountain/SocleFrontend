@@ -30,6 +30,34 @@ const errorMessage = ref('')
 const successMessage = ref('')
 const selectedEtudiant = ref(null)
 
+// Sorting
+const sortColumn = ref('')
+const sortOrder = ref('asc')
+
+const sortedEtudiants = computed(() => {
+  return [...etudiants.value].sort((a, b) => {
+    if (!sortColumn.value) return 0
+    const valA = a[sortColumn.value]
+    const valB = b[sortColumn.value]
+    
+    if (valA == null) return 1
+    if (valB == null) return -1
+    
+    if (valA < valB) return sortOrder.value === 'asc' ? -1 : 1
+    if (valA > valB) return sortOrder.value === 'asc' ? 1 : -1
+    return 0
+  })
+})
+
+const sortBy = (column) => {
+  if (sortColumn.value === column) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortColumn.value = column
+    sortOrder.value = 'asc'
+  }
+}
+
 // Computed property to get promotion display name
 const getPromotionName = (anneePro) => {
   const promotion = promotions.value.find(p => p.anneePro === anneePro)
@@ -388,13 +416,27 @@ onMounted(async () => {
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-                <th>N° Étudiant</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Sexe</th>
-                <th>Email</th>
-                <th>Promotion</th>
-                <th>Est Diplômé</th>
+                <th @click="sortBy('noEtudiantNat')" style="cursor: pointer">
+                  N° Étudiant <i v-if="sortColumn === 'noEtudiantNat'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('nom')" style="cursor: pointer">
+                  Nom <i v-if="sortColumn === 'nom'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('prenom')" style="cursor: pointer">
+                  Prénom <i v-if="sortColumn === 'prenom'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('sexe')" style="cursor: pointer">
+                  Sexe <i v-if="sortColumn === 'sexe'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('email')" style="cursor: pointer">
+                  Email <i v-if="sortColumn === 'email'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('anneePro')" style="cursor: pointer">
+                  Promotion <i v-if="sortColumn === 'anneePro'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('estDiplome')" style="cursor: pointer">
+                  Est Diplômé <i v-if="sortColumn === 'estDiplome'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -402,7 +444,7 @@ onMounted(async () => {
               <tr v-if="etudiants.length === 0">
                 <td colspan="8" class="text-center">Aucun étudiant trouvé</td>
               </tr>
-              <tr v-for="etudiant in etudiants" :key="etudiant.noEtudiantNat">
+              <tr v-for="etudiant in sortedEtudiants" :key="etudiant.noEtudiantNat">
                 <td>{{ etudiant.noEtudiantNat }}</td>
                 <td>{{ etudiant.nom }}</td>
                 <td>{{ etudiant.prenom }}</td>

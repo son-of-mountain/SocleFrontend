@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const enseignants = ref([])
 const form = ref({
@@ -19,6 +19,34 @@ const isEditing = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
 const selectedEnseignant = ref(null)
+
+// Sorting
+const sortColumn = ref('')
+const sortOrder = ref('asc')
+
+const sortedEnseignants = computed(() => {
+  return [...enseignants.value].sort((a, b) => {
+    if (!sortColumn.value) return 0
+    const valA = a[sortColumn.value]
+    const valB = b[sortColumn.value]
+    
+    if (valA == null) return 1
+    if (valB == null) return -1
+    
+    if (valA < valB) return sortOrder.value === 'asc' ? -1 : 1
+    if (valA > valB) return sortOrder.value === 'asc' ? 1 : -1
+    return 0
+  })
+})
+
+const sortBy = (column) => {
+  if (sortColumn.value === column) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortColumn.value = column
+    sortOrder.value = 'asc'
+  }
+}
 
 // Fetch all enseignants
 const fetchEnseignants = async () => {
@@ -240,11 +268,21 @@ onMounted(() => {
           <table class="table table-striped table-hover">
             <thead>
               <tr>
-                <th>N°</th>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Type</th>
-                <th>Sexe</th>
+                <th @click="sortBy('noEnseignant')" style="cursor: pointer">
+                  N° <i v-if="sortColumn === 'noEnseignant'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('nom')" style="cursor: pointer">
+                  Nom <i v-if="sortColumn === 'nom'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('prenom')" style="cursor: pointer">
+                  Prénom <i v-if="sortColumn === 'prenom'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('type')" style="cursor: pointer">
+                  Type <i v-if="sortColumn === 'type'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
+                <th @click="sortBy('sexe')" style="cursor: pointer">
+                  Sexe <i v-if="sortColumn === 'sexe'" :class="sortOrder === 'asc' ? 'bi bi-caret-up-fill' : 'bi bi-caret-down-fill'"></i>
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -252,7 +290,7 @@ onMounted(() => {
               <tr v-if="enseignants.length === 0">
                 <td colspan="6" class="text-center">Aucun enseignant trouvé</td>
               </tr>
-              <tr v-for="enseignant in enseignants" :key="enseignant.noEnseignant">
+              <tr v-for="enseignant in sortedEnseignants" :key="enseignant.noEnseignant">
                 <td>{{ enseignant.noEnseignant }}</td>
                 <td>{{ enseignant.nom }}</td>
                 <td>{{ enseignant.prenom }}</td>
