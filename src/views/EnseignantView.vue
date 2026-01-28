@@ -54,7 +54,7 @@ const sortBy = (column) => {
 // Fetch all enseignants
 const fetchEnseignants = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/enseignants')
+    const response = await fetch('/api/enseignants')
     const result = await response.json()
     enseignants.value = result
   } catch (error) {
@@ -65,7 +65,7 @@ const fetchEnseignants = async () => {
 // Add new enseignant
 const addEnseignant = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/enseignants', {
+    const response = await fetch('/api/enseignants', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -87,7 +87,7 @@ const addEnseignant = async () => {
 // Update enseignant
 const updateEnseignant = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/enseignants', {
+    const response = await fetch('/api/enseignants', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -111,7 +111,7 @@ const deleteEnseignant = async (id) => {
   if (!confirm('Êtes-vous sûr de vouloir supprimer cet enseignant ?')) return
   
   try {
-    const response = await fetch(`http://localhost:8080/api/enseignants/${id}`, {
+    const response = await fetch(`/api/enseignants/${id}`, {
       method: 'DELETE'
     })
     const result = await response.json()

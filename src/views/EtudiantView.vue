@@ -69,7 +69,7 @@ const getPromotionName = (anneePro) => {
 // Fetch all etudiants
 const fetchEtudiants = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/etudiants')
+    const response = await fetch('/api/etudiants')
     const result = await response.json()
     etudiants.value = result
   } catch (error) {
@@ -80,7 +80,7 @@ const fetchEtudiants = async () => {
 // Fetch all promotions for dropdown
 const fetchPromotions = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/promotions')
+    const response = await fetch('/api/promotions')
     const result = await response.json()
     promotions.value = result
   } catch (error) {
@@ -91,7 +91,7 @@ const fetchPromotions = async () => {
 // Add new etudiant
 const addEtudiant = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/etudiants', {
+    const response = await fetch('/api/etudiants', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -113,7 +113,7 @@ const addEtudiant = async () => {
 // Update etudiant
 const updateEtudiant = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/etudiants', {
+    const response = await fetch('/api/etudiants', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -137,7 +137,7 @@ const deleteEtudiant = async (noEtudiantNat) => {
   if (!confirm('Êtes-vous sûr de vouloir supprimer cet étudiant ?')) return
   
   try {
-    const response = await fetch(`http://localhost:8080/api/etudiants/${noEtudiantNat}`, {
+    const response = await fetch(`/api/etudiants/${noEtudiantNat}`, {
       method: 'DELETE'
     })
     const result = await response.json()

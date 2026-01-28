@@ -49,7 +49,7 @@ const sortBy = (column) => {
 // Fetch all formations
 const fetchFormations = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/formations')
+    const response = await fetch('/api/formations')
     const result = await response.json()
     formations.value = result
   } catch (error) {
@@ -60,7 +60,7 @@ const fetchFormations = async () => {
 // Add new formation
 const addFormation = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/formations', {
+    const response = await fetch('/api/formations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -82,7 +82,7 @@ const addFormation = async () => {
 // Update formation
 const updateFormation = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/formations', {
+    const response = await fetch('/api/formations', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -106,7 +106,7 @@ const deleteFormation = async (codeFormation) => {
   if (!confirm('Êtes-vous sûr de vouloir supprimer cette formation ?')) return
   
   try {
-    const response = await fetch(`http://localhost:8080/api/formations/${codeFormation}`, {
+    const response = await fetch(`/api/formations/${codeFormation}`, {
       method: 'DELETE'
     })
     const result = await response.json()

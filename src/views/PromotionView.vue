@@ -64,7 +64,7 @@ const getEnseignantName = (noEnseignant) => {
 // Fetch all promotions
 const fetchPromotions = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/promotions')
+    const response = await fetch('/api/promotions')
     const result = await response.json()
     promotions.value = result
   } catch (error) {
@@ -75,7 +75,7 @@ const fetchPromotions = async () => {
 // Fetch all enseignants for dropdown
 const fetchEnseignants = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/enseignants')
+    const response = await fetch('/api/enseignants')
     const result = await response.json()
     enseignants.value = result
   } catch (error) {
@@ -86,7 +86,7 @@ const fetchEnseignants = async () => {
 // Fetch all formations for dropdown
 const fetchFormations = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/formations')
+    const response = await fetch('/api/formations')
     const result = await response.json()
     formations.value = result
   } catch (error) {
@@ -97,7 +97,7 @@ const fetchFormations = async () => {
 // Add new promotion
 const addPromotion = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/promotions', {
+    const response = await fetch('/api/promotions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -119,7 +119,7 @@ const addPromotion = async () => {
 // Update promotion
 const updatePromotion = async () => {
   try {
-    const response = await fetch('http://localhost:8080/api/promotions', {
+    const response = await fetch('/api/promotions', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form.value)
@@ -143,7 +143,7 @@ const deletePromotion = async (anneePro) => {
   if (!confirm('Êtes-vous sûr de vouloir supprimer cette promotion ?')) return
   
   try {
-    const response = await fetch(`http://localhost:8080/api/promotions/${anneePro}`, {
+    const response = await fetch(`/api/promotions/${anneePro}`, {
       method: 'DELETE'
     })
     const result = await response.json()

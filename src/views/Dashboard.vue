@@ -15,10 +15,10 @@ let pollingInterval = null
 const fetchStats = async () => {
   try {
     const [enseignantsRes, etudiantsRes, formationsRes, promotionsRes] = await Promise.all([
-      fetch('http://localhost:8080/api/enseignants'),
-      fetch('http://localhost:8080/api/etudiants'),
-      fetch('http://localhost:8080/api/formations'),
-      fetch('http://localhost:8080/api/promotions')
+      fetch('/api/enseignants'),
+      fetch('/api/etudiants'),
+      fetch('/api/formations'),
+      fetch('/api/promotions')
     ])
 
     const enseignants = await enseignantsRes.json()
