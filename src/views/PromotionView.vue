@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { validatePromotion } from '../utils/validators'
 
 const promotions = ref([])
 const enseignants = ref([])
@@ -167,6 +168,17 @@ const editPromotion = (promotion) => {
 // Submit form
 const submitForm = () => {
   errorMessage.value = ''
+
+  // Validation DB Front-end
+  const errors = validatePromotion(form.value)
+  if (Object.keys(errors).length > 0) {
+    const errorList = Object.entries(errors)
+      .map(([field, msg]) => `• ${field.charAt(0).toUpperCase() + field.slice(1)}: ${msg}`)
+      .join('\n')
+    errorMessage.value = "Veuillez corriger les erreurs suivantes :\n" + errorList
+    return
+  }
+
   if (isEditing.value) {
     updatePromotion()
   } else {

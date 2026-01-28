@@ -1,8 +1,10 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
+import { validateEnseignant } from '../utils/validators'
 
 const enseignants = ref([])
 const form = ref({
+
   id: null,
   nom: '',
   prenom: '',
@@ -134,6 +136,18 @@ const editEnseignant = (enseignant) => {
 // Submit form
 const submitForm = () => {
   errorMessage.value = ''
+  
+  // Validation DB Front-end
+  const errors = validateEnseignant(form.value)
+  if (Object.keys(errors).length > 0) {
+    // Construction d'un message d'erreur lisible
+    const errorList = Object.entries(errors)
+      .map(([field, msg]) => `• ${field.charAt(0).toUpperCase() + field.slice(1)}: ${msg}`)
+      .join('\n')
+    errorMessage.value = "Veuillez corriger les erreurs suivantes :\n" + errorList
+    return
+  }
+
   if (isEditing.value) {
     updateEnseignant()
   } else {

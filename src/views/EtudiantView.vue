@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import FieldTooltip from '../components/FieldTooltip.vue'
+import { validateEtudiant } from '../utils/validators'
 
 const etudiants = ref([])
 const promotions = ref([])
@@ -161,6 +162,17 @@ const editEtudiant = (etudiant) => {
 // Submit form
 const submitForm = () => {
   errorMessage.value = ''
+
+  // Validation DB Front-end
+  const errors = validateEtudiant(form.value)
+  if (Object.keys(errors).length > 0) {
+    const errorList = Object.entries(errors)
+      .map(([field, msg]) => `• ${field.charAt(0).toUpperCase() + field.slice(1)}: ${msg}`)
+      .join('\n')
+    errorMessage.value = "Veuillez corriger les erreurs suivantes :\n" + errorList
+    return
+  }
+
   if (isEditing.value) {
     updateEtudiant()
   } else {
