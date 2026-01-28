@@ -218,7 +218,9 @@ onUnmounted(() => {
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label">N0 Année</label>
-              <input v-model.number="form.n0Annee" type="number" class="form-control">
+              <select v-model.number="form.n0Annee" class="form-select" required>
+                <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
+              </select>
             </div>
             <div class="col-md-4 mb-3">
               <label class="form-label">Double Diplôme *</label>
