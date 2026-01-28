@@ -14,6 +14,7 @@ const form = ref({
 const isEditing = ref(false)
 const errorMessage = ref('')
 const successMessage = ref('')
+const selectedFormation = ref(null)
 
 // Fetch all formations
 const fetchFormations = async () => {
@@ -238,6 +239,9 @@ onMounted(() => {
                 <td>{{ formation.debutHabilitation }}</td>
                 <td>{{ formation.finHabilitation }}</td>
                 <td>
+                  <button @click="selectedFormation = formation" data-bs-toggle="modal" data-bs-target="#viewFormationModal" class="btn btn-sm btn-info me-2" title="Voir détails">
+                    <i class="bi bi-eye"></i>
+                  </button>
                   <button @click="editFormation(formation)" class="btn btn-sm btn-warning me-2" title="Modifier">
                     <i class="bi bi-pencil"></i>
                   </button>
@@ -248,6 +252,30 @@ onMounted(() => {
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Détails -->
+    <div class="modal fade" id="viewFormationModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Détails de la Formation</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" v-if="selectedFormation">
+            <p><strong>Code Formation:</strong> {{ selectedFormation.codeFormation }}</p>
+            <p><strong>Nom Formation:</strong> {{ selectedFormation.nomFormation }}</p>
+            <p><strong>Diplôme:</strong> {{ selectedFormation.diplome === 'M' ? 'Master' : 'Licence' }}</p>
+            <p><strong>N° Année:</strong> {{ selectedFormation.n0Annee }}</p>
+            <p><strong>Double Diplôme:</strong> {{ selectedFormation.doubleDiplome === 'O' ? 'Oui' : 'Non' }}</p>
+            <p><strong>Début Habilitation:</strong> {{ selectedFormation.debutHabilitation }}</p>
+            <p><strong>Fin Habilitation:</strong> {{ selectedFormation.finHabilitation }}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+          </div>
         </div>
       </div>
     </div>
